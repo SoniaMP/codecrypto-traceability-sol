@@ -21,6 +21,24 @@ contract TraceabilityTest is Test {
         );
     }
 
+    function testUnregisterOrganization() public {
+        traceability.registerOrganization("OrgA", Traceability.Role.Producer);
+        traceability.unregisterOrganization();
+        string memory name = traceability.getOrganizationName(address(this));
+        assertEq(bytes(name).length, 0);
+        assertEq(
+            uint256(traceability.roles(address(this))),
+            uint256(Traceability.Role.None)
+        );
+    }
+
+    function testUnregisterOrganizationNotRegistered() public {
+        (bool success, ) = address(traceability).call(
+            abi.encodeWithSignature("unregisterOrganization()")
+        );
+        assertTrue(!success);
+    }
+
     function testRegisterOrganizationEmptyName() public {
         (bool success, ) = address(traceability).call(
             abi.encodeWithSignature(

@@ -31,6 +31,15 @@ contract Traceability {
         roles[msg.sender] = role;
     }
 
+    function unregisterOrganization() public {
+        require(
+            bytes(organizationNames[msg.sender]).length != 0,
+            "Organization not registered"
+        );
+        delete organizationNames[msg.sender];
+        delete roles[msg.sender];
+    }
+
     function addEvent(
         string memory code,
         string memory details,
